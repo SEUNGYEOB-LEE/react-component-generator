@@ -2,7 +2,7 @@
 name: browser-verifier
 description: 사용자에게 보이는 프런트엔드 동작, 브라우저 저장소, 화면 이동, 프런트엔드 네트워크 흐름이 변경되면 능동적으로 사용한다. 문서만 변경했거나 백엔드만 변경했다면 사용하지 않는다.
 disallowedTools: Read, Grep, Glob, Write, Edit, Bash, NotebookEdit, WebSearch, WebFetch
-maxTurns: 12
+maxTurns: 20
 mcpServers:
   - chrome-devtools:
       type: stdio
