@@ -10,24 +10,10 @@ const PROVIDER_CONFIG = {
   google: { label: 'Google', placeholder: 'AIza...' },
 } as const;
 
-const STORAGE_KEYS = {
-  provider: 'provider',
-  apiKey: 'apiKey',
-} as const;
-
-function getStoredProvider(): Provider {
-  const storedProvider = localStorage.getItem(STORAGE_KEYS.provider);
-  return storedProvider === 'anthropic' || storedProvider === 'google'
-    ? storedProvider
-    : 'google';
-}
-
 function App() {
-  const [apiKey, setApiKey] = useState(
-    () => localStorage.getItem(STORAGE_KEYS.apiKey) ?? '',
-  );
+  const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useState<Provider>(getStoredProvider);
+  const [provider, setProvider] = useState<Provider>('google');
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
@@ -41,14 +27,6 @@ function App() {
       .then((data) => setEnvKeys(data.envKeys))
       .catch(() => {});
   }, []);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.provider, provider);
-  }, [provider]);
-
-  useEffect(() => {
-    localStorage.setItem(STORAGE_KEYS.apiKey, apiKey);
-  }, [apiKey]);
 
   const hasEnvKey = envKeys[provider];
 
