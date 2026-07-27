@@ -1,47 +1,48 @@
-# Project Instructions
+# 프로젝트 작업 규칙
 
-## Operational Commands
+## 실행 명령
 
-- Install dependencies: `bun install`
-- Run API server and Vite: `bun run dev`
-- Run tests once: `bun run test`
-- Build production assets: `bun run build`
-- Run lint: `bun run lint`
-- Use Bun for dependency management and project scripts.
+- 의존성 설치: `bun install`
+- API 서버와 Vite 실행: `bun run dev`
+- 전체 테스트 실행: `bun run test`
+- 프로덕션 빌드: `bun run build`
+- 린트 검사: `bun run lint`
+- 의존성과 프로젝트 스크립트는 Bun으로만 관리한다.
 
-## Project Context
+## 프로젝트 맥락
 
-This is a React 19 and TypeScript training app. Vite serves the frontend on
-`http://localhost:5173`, and Bun serves the local API proxy on port 3002.
-The `mcp-start` branch is a recovery checkpoint for the browser-verification
-lab. Treat all data entered into the app as disposable training data.
+React 19와 TypeScript로 만든 교육용 애플리케이션이다. 프런트엔드는 Vite를
+통해 `http://localhost:5173`에서 실행하며, 로컬 API 프록시는 Bun을 사용해
+3002번 포트에서 실행한다. `mcp-start` 브랜치는 브라우저 검증 실습용 복구
+지점이다. 애플리케이션에 입력하는 값은 모두 폐기 가능한 실습 데이터로
+취급한다.
 
-## Golden Rules
+## 필수 규칙
 
-- Never use a real API key in tests, prompts, logs, screenshots, or browser
-  verification. Use `test-key-not-a-secret` for the lab.
-- Browser verification must not call Anthropic, Google, or any other external
-  model API. Do not submit the component-generation form during the audit.
-- After changes to user-visible frontend behavior, browser storage, navigation,
-  or frontend network flows, ensure `bun run dev` is reachable and proactively
-  delegate verification to `browser-verifier`.
-- Skip browser verification for documentation-only or backend-only changes and
-  state why it was skipped.
-- The browser verifier is an independent, read-only observer. It must not edit
-  code or start the development server.
-- Do not report completion until relevant automated tests and the verifier's
-  PASS/FAIL evidence have both been reviewed. Report a blocked verifier as a
-  blocker, not as a pass.
+- 테스트, 프롬프트, 로그, 스크린샷, 브라우저 검증에 실제 API Key를 사용하지
+  않는다. 실습에서는 `test-key-not-a-secret`만 사용한다.
+- 브라우저 검증 중 Anthropic, Google 등 외부 모델 API를 호출하지 않는다.
+  감사 과정에서는 컴포넌트 생성 폼을 제출하지 않는다.
+- 사용자에게 보이는 프런트엔드 동작, 브라우저 저장소, 화면 이동, 프런트엔드
+  네트워크 흐름을 변경한 뒤에는 `bun run dev`로 애플리케이션에 접속할 수
+  있는지 확인하고 `browser-verifier`에 검증을 능동적으로 위임한다.
+- 문서만 변경했거나 백엔드만 변경했다면 브라우저 검증을 생략하고 그 이유를
+  밝힌다.
+- 브라우저 검증자는 독립적인 읽기 전용 관찰자다. 코드를 수정하거나 개발
+  서버를 직접 실행해서는 안 된다.
+- 관련 자동화 테스트와 검증자의 PASS/FAIL 근거를 모두 확인하기 전에는 완료로
+  보고하지 않는다. 검증자를 실행할 수 없다면 PASS가 아니라 차단 사유로
+  보고한다.
 
-## Engineering Standards
+## 구현 기준
 
-- Add or update a failing test before fixing observable behavior.
-- Keep provider values aligned with the `Provider` type in `src/types/index.ts`.
-- Keep browser-storage behavior explicit and covered by tests.
-- Make the smallest change that satisfies the verified requirement.
-- Never commit `.env`, credentials, generated build output, or browser profiles.
+- 관찰 가능한 동작을 수정하기 전에 실패하는 테스트를 추가하거나 수정한다.
+- Provider 값은 `src/types/index.ts`의 `Provider` 타입과 일치시킨다.
+- 브라우저 저장소 동작은 코드에서 명시적으로 표현하고 테스트로 보호한다.
+- 검증된 요구사항을 만족하는 최소 범위만 변경한다.
+- `.env`, 인증 정보, 빌드 결과물, 브라우저 프로필은 커밋하지 않는다.
 
-## Maintenance
+## 유지 관리
 
-Update this file when project commands, ports, verification triggers, or
-security boundaries change.
+프로젝트 명령, 포트, 검증 실행 조건, 보안 경계가 변경되면 이 문서도 함께
+갱신한다.
