@@ -27,8 +27,10 @@ dist-ssr
 .worklog/
 
 .env
-# 에이전트 산출물 (현재 비공개)
-.agents/
+# 에이전트 산출물 (현재 비공개), 단 Codex용 공용 스킬 폴더는 예외로 공유한다
+.agents/*
+!.agents/skills/
+!.agents/skills/**
 
 # playwright-cli 세션 산출물
 .playwright-cli/

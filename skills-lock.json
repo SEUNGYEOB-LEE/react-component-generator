@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "skills": {
+    "agents-md": {
+      "source": "devbrother2024/skills",
+      "sourceType": "github",
+      "skillPath": "agents-md/SKILL.md",
+      "computedHash": "d677db349a689e9c37a978e8c4b878bd16a183eff7214068bc4f351d571266a1"
+    }
+  }
+}
