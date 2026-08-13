@@ -13,20 +13,30 @@ export function loadPersistedState(): PersistedState | null {
   const raw = localStorage.getItem(STORAGE_KEY);
   if (!raw) return null;
 
+  let parsed: PersistedState;
   try {
-    const parsed = JSON.parse(raw) as PersistedState;
-    return {
-      ...parsed,
-      components: parsed.components.map((component) => ({
-        ...component,
-        createdAt: new Date(component.createdAt),
-      })),
-    };
+    parsed = JSON.parse(raw) as PersistedState;
   } catch {
     return null;
   }
+
+  let components: GeneratedComponent[];
+  try {
+    components = (parsed.components ?? []).map((component) => ({
+      ...component,
+      createdAt: new Date(component.createdAt),
+    }));
+  } catch {
+    components = [];
+  }
+
+  return { ...parsed, components };
 }
 
 export function savePersistedState(state: PersistedState): void {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+  } catch {
+    // localStorage 용량 초과 등으로 저장에 실패해도 앱 동작에는 영향을 주지 않는다.
+  }
 }

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { loadPersistedState, savePersistedState } from './storage';
 import type { GeneratedComponent } from '../types';
 
@@ -54,5 +54,32 @@ describe('storage', () => {
 
     expect(() => loadPersistedState()).not.toThrow();
     expect(loadPersistedState()).toBeNull();
+  });
+
+  it('components 필드가 유효하지 않아도 apiKey/provider는 복구된다', () => {
+    localStorage.setItem(
+      'rcg:state',
+      JSON.stringify({ apiKey: 'sk-test', provider: 'anthropic', promptHistory: [], components: null })
+    );
+
+    const loaded = loadPersistedState();
+
+    expect(loaded?.apiKey).toBe('sk-test');
+    expect(loaded?.provider).toBe('anthropic');
+    expect(loaded?.components).toEqual([]);
+  });
+
+  it('localStorage.setItem이 예외를 던져도(용량 초과 등) savePersistedState는 예외를 전파하지 않는다', () => {
+    const setItemSpy = vi
+      .spyOn(Storage.prototype, 'setItem')
+      .mockImplementation(() => {
+        throw new Error('QuotaExceededError');
+      });
+
+    expect(() =>
+      savePersistedState({ apiKey: '', provider: 'google', promptHistory: [], components: [] })
+    ).not.toThrow();
+
+    setItemSpy.mockRestore();
   });
 });

@@ -132,7 +132,7 @@ function App() {
               <li>
                 <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd>로 바로 생성합니다.
               </li>
-              <li>생성된 컴포넌트는 새로고침 전까지 유지돼요.</li>
+              <li>생성된 컴포넌트는 브라우저에 자동 저장돼요.</li>
               <li>Provider를 바꾸면 API Key 입력란이 초기화됩니다.</li>
             </ul>
           </div>
