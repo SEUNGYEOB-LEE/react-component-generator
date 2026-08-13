@@ -7,10 +7,10 @@ command=$(node -e "
   process.stdout.write((data.tool_input && data.tool_input.command) || '');
 " <<< "$input")
 
-case "$command" in
-  *"git commit"*)
-    bun run test || { echo "Tests failed" >&2; exit 2; }
-    ;;
-esac
+# 명령어 어디에나 "git commit" 문자열이 있으면 매칭하지 않는다 (예: git log --grep "git commit").
+# 실제 git commit 호출만 매칭: 명령어 시작이거나, ; & | 로 연결된 다음 세그먼트 시작일 때만.
+if echo "$command" | grep -qE '(^|[;&|]+[[:space:]]*)git[[:space:]]+commit([[:space:]]|$)'; then
+  bun run test || { echo "Tests failed" >&2; exit 2; }
+fi
 
 exit 0

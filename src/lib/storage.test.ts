@@ -89,6 +89,26 @@ describe('storage', () => {
     expect(loaded?.components[0].id).toBe('1');
   });
 
+  it('code/prompt/id가 문자열이 아닌 손상된 컴포넌트는 목록에서 제거한다', () => {
+    localStorage.setItem(
+      'rcg:state',
+      JSON.stringify({
+        apiKey: '',
+        provider: 'google',
+        promptHistory: [],
+        components: [
+          { id: '1', prompt: 'ok', code: 'render(<div />);', createdAt: '2026-01-01T00:00:00.000Z' },
+          { id: '2', prompt: 'broken', code: undefined, createdAt: '2026-01-01T00:00:00.000Z' },
+        ],
+      })
+    );
+
+    const loaded = loadPersistedState();
+
+    expect(loaded?.components).toHaveLength(1);
+    expect(loaded?.components[0].id).toBe('1');
+  });
+
   it('localStorage.setItem이 예외를 던져도(용량 초과 등) savePersistedState는 예외를 전파하지 않는다', () => {
     const setItemSpy = vi
       .spyOn(Storage.prototype, 'setItem')

@@ -9,6 +9,10 @@ file=$(node -e "
 
 [ -z "$file" ] && exit 0
 
+# Windows에서는 tool_input.file_path가 백슬래시 경로로 온다 (예: C:\...\src\App.tsx).
+# 아래 패턴 매칭이 슬래시를 가정하므로 먼저 정규화한다.
+file="${file//\\//}"
+
 case "$file" in
   *src/*.ts|*src/*.tsx) ;;
   *) exit 0 ;;

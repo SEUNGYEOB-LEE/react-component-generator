@@ -24,7 +24,14 @@ export function loadPersistedState(): PersistedState | null {
   try {
     components = (parsed.components ?? [])
       .map((component) => ({ ...component, createdAt: new Date(component.createdAt) }))
-      .filter((component) => !Number.isNaN(component.createdAt.getTime()));
+      .filter(
+        (component) =>
+          !Number.isNaN(component.createdAt.getTime()) &&
+          typeof component.id === 'string' &&
+          component.id.length > 0 &&
+          typeof component.code === 'string' &&
+          typeof component.prompt === 'string'
+      );
   } catch {
     components = [];
   }
