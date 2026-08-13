@@ -22,6 +22,7 @@ React 19 + TypeScript frontend (Vite). Single-page prompt-to-component workbench
 
 ## Local Golden Rules
 
-- **Asymmetry** — `PromptInput` has a co-located test (`PromptInput.test.tsx`); `ComponentCard`, `LivePreview`, `CodeView`, and `useComponentGenerator` do not. When adding meaningful interaction logic to one of these, add a matching test file rather than leaving the gap wider.
+- **Asymmetry** — `PromptInput` and `useComponentGenerator` have co-located tests (`PromptInput.test.tsx`, `useComponentGenerator.test.ts`); `ComponentCard`, `LivePreview`, and `CodeView` still do not. When adding meaningful interaction logic to one of these, add a matching test file rather than leaving the gap wider.
+- **Test boundary** — `lib/storage.ts`'s pure load/save functions are unit-tested, but the actual integration point (`App.tsx`'s mount-time load + on-change save into `useComponentGenerator`) has no test. The claim "reload preserves state" is only verified manually, not automatically.
 - **Hard constraint** — Any code string handed to `LivePreview`'s `code` prop is executed by `react-live` in `noInline` mode and must contain a `render(...)` call or nothing appears (enforced today server-side by `ensureRenderCall`). If this module ever transforms code client-side before rendering, preserve that guarantee.
 - **Security boundary** — The API key typed into `App.tsx`'s `apiKey` state is sent only in the `fetch('/api/generate')` request body to the local backend. It is also persisted to `localStorage` (`lib/storage.ts`) so the field survives a reload — this is a deliberate product decision (see `lib/storage.test.ts`), not an oversight. Do not add any further transmission of it (e.g. logging, analytics, a third-party request).
