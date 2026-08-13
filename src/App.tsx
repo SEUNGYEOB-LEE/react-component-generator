@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { PromptInput } from './components/PromptInput';
 import { ComponentCard } from './components/ComponentCard';
 import { useComponentGenerator } from './hooks/useComponentGenerator';
+import { loadPersistedState, savePersistedState } from './lib/storage';
 import type { Provider } from './types';
 import './App.css';
 
@@ -11,15 +12,18 @@ const PROVIDER_CONFIG = {
 } as const;
 
 function App() {
-  const [apiKey, setApiKey] = useState('');
+  const [persisted] = useState(() => loadPersistedState());
+  const [apiKey, setApiKey] = useState(persisted?.apiKey ?? '');
   const [showKey, setShowKey] = useState(false);
-  const [provider, setProvider] = useState<Provider>('google');
+  const [provider, setProvider] = useState<Provider>(persisted?.provider ?? 'google');
   const [envKeys, setEnvKeys] = useState<Record<Provider, boolean>>({
     anthropic: false,
     google: false,
   });
-  const { components, isLoading, error, generate, removeComponent, clearAll } =
-    useComponentGenerator();
+  const { components, promptHistory, isLoading, error, generate, removeComponent, clearAll } =
+    useComponentGenerator(
+      persisted ? { components: persisted.components, promptHistory: persisted.promptHistory } : undefined
+    );
 
   useEffect(() => {
     fetch('/api/config')
@@ -27,6 +31,10 @@ function App() {
       .then((data) => setEnvKeys(data.envKeys))
       .catch(() => {});
   }, []);
+
+  useEffect(() => {
+    savePersistedState({ apiKey, provider, promptHistory, components });
+  }, [apiKey, provider, promptHistory, components]);
 
   const hasEnvKey = envKeys[provider];
 
@@ -118,6 +126,16 @@ function App() {
               {hasEnvKey ? '.env 키가 연결되어 있습니다.' : '직접 입력하거나 서버 환경변수를 설정하세요.'}
             </p>
           </div>
+          <div className="panel-notes">
+            <span className="panel-kicker">Notes</span>
+            <ul>
+              <li>
+                <kbd>Ctrl</kbd>/<kbd>⌘</kbd> + <kbd>Enter</kbd>로 바로 생성합니다.
+              </li>
+              <li>생성된 컴포넌트는 새로고침 전까지 유지돼요.</li>
+              <li>Provider를 바꾸면 API Key 입력란이 초기화됩니다.</li>
+            </ul>
+          </div>
         </aside>
       </main>
 
@@ -142,11 +160,17 @@ function App() {
 
         {components.length === 0 && !isLoading && (
           <div className="empty-state">
-            <div className="empty-preview" aria-hidden="true">
+            <div className="empty-preview viewfinder" aria-hidden="true">
+              <span className="viewfinder-corner viewfinder-corner--tl" />
+              <span className="viewfinder-corner viewfinder-corner--tr" />
+              <span className="viewfinder-corner viewfinder-corner--bl" />
+              <span className="viewfinder-corner viewfinder-corner--br" />
               <div className="empty-window">
-                <span />
-                <span />
-                <span />
+                <div className="empty-window-dots">
+                  <span />
+                  <span />
+                  <span />
+                </div>
               </div>
               <div className="empty-canvas">
                 <div className="empty-card empty-card--primary" />
@@ -155,7 +179,8 @@ function App() {
               </div>
             </div>
             <div className="empty-copy">
-              <h2>새 컴포넌트를 생성해보세요.</h2>
+              <h2>아직 생성된 컴포넌트가 없어요.</h2>
+              <p>왼쪽에 프롬프트를 입력하고 컴포넌트 생성을 누르면 여기에 미리보기가 나타나요.</p>
             </div>
           </div>
         )}

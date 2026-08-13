@@ -3,6 +3,7 @@ import type { GeneratedComponent, Provider } from '../types';
 
 interface UseComponentGeneratorReturn {
   components: GeneratedComponent[];
+  promptHistory: string[];
   isLoading: boolean;
   error: string | null;
   generate: (prompt: string, apiKey: string | undefined, provider: Provider) => Promise<void>;
@@ -10,14 +11,21 @@ interface UseComponentGeneratorReturn {
   clearAll: () => void;
 }
 
-export function useComponentGenerator(): UseComponentGeneratorReturn {
-  const [components, setComponents] = useState<GeneratedComponent[]>([]);
+interface InitialState {
+  components: GeneratedComponent[];
+  promptHistory: string[];
+}
+
+export function useComponentGenerator(initialState?: InitialState): UseComponentGeneratorReturn {
+  const [components, setComponents] = useState<GeneratedComponent[]>(initialState?.components ?? []);
+  const [promptHistory, setPromptHistory] = useState<string[]>(initialState?.promptHistory ?? []);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   const generate = useCallback(async (prompt: string, apiKey: string | undefined, provider: Provider) => {
     setIsLoading(true);
     setError(null);
+    setPromptHistory((prev) => (prev[prev.length - 1] === prompt ? prev : [...prev, prompt]));
 
     try {
       const res = await fetch('/api/generate', {
@@ -56,5 +64,5 @@ export function useComponentGenerator(): UseComponentGeneratorReturn {
     setComponents([]);
   }, []);
 
-  return { components, isLoading, error, generate, removeComponent, clearAll };
+  return { components, promptHistory, isLoading, error, generate, removeComponent, clearAll };
 }
