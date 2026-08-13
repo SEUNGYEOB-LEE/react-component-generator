@@ -69,6 +69,26 @@ describe('storage', () => {
     expect(loaded?.components).toEqual([]);
   });
 
+  it('component의 createdAt이 파싱 불가능한 문자열이면 해당 컴포넌트를 목록에서 제거한다', () => {
+    localStorage.setItem(
+      'rcg:state',
+      JSON.stringify({
+        apiKey: '',
+        provider: 'google',
+        promptHistory: [],
+        components: [
+          { id: '1', prompt: 'ok', code: '', createdAt: '2026-01-01T00:00:00.000Z' },
+          { id: '2', prompt: 'broken', code: '', createdAt: 'not-a-date' },
+        ],
+      })
+    );
+
+    const loaded = loadPersistedState();
+
+    expect(loaded?.components).toHaveLength(1);
+    expect(loaded?.components[0].id).toBe('1');
+  });
+
   it('localStorage.setItem이 예외를 던져도(용량 초과 등) savePersistedState는 예외를 전파하지 않는다', () => {
     const setItemSpy = vi
       .spyOn(Storage.prototype, 'setItem')

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { CharCounter } from './CharCounter';
 
 interface PromptInputProps {
   onGenerate: (prompt: string) => void;
@@ -59,6 +60,7 @@ export function PromptInput({ onGenerate, isLoading }: PromptInputProps) {
           )}
         </button>
       </form>
+      <CharCounter length={prompt.length} />
       <div className="prompt-examples">
         <span className="examples-label">예시 프롬프트</span>
         {EXAMPLES.map((example) => (

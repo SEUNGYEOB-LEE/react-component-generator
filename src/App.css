@@ -528,6 +528,15 @@ kbd {
   gap: 8px;
 }
 
+.char-counter {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink-faint);
+  font-family: var(--font-code);
+  font-size: 0.72rem;
+  text-align: right;
+}
+
 .prompt-examples {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));

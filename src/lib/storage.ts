@@ -22,10 +22,9 @@ export function loadPersistedState(): PersistedState | null {
 
   let components: GeneratedComponent[];
   try {
-    components = (parsed.components ?? []).map((component) => ({
-      ...component,
-      createdAt: new Date(component.createdAt),
-    }));
+    components = (parsed.components ?? [])
+      .map((component) => ({ ...component, createdAt: new Date(component.createdAt) }))
+      .filter((component) => !Number.isNaN(component.createdAt.getTime()));
   } catch {
     components = [];
   }

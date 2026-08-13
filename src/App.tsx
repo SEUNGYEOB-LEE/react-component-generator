@@ -32,6 +32,9 @@ function App() {
       .catch(() => {});
   }, []);
 
+  // 알려진 트레이드오프: apiKey 입력마다 components 전체를 재직렬화한다.
+  // 컴포넌트가 매우 많아지면 입력 지연이 생길 수 있으나, 이 앱의 사용 규모에서는
+  // 디바운싱을 추가하는 복잡도가 아직 정당화되지 않는다고 판단해 보류함.
   useEffect(() => {
     savePersistedState({ apiKey, provider, promptHistory, components });
   }, [apiKey, provider, promptHistory, components]);
